@@ -1,16 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="idl/KeyValueStore.cs" ctype="Workbench">
-    <Files>
-      <File FileName="idl/UserSession.cs" Line="89" Column="16" />
-      <File FileName="idl/KeyValueStore.cs" Line="112" Column="6" />
-      <File FileName="idl/CallFormatter.cs" Line="252" Column="60" />
-      <File FileName="idl/Helpers.cs" Line="112" Column="26" />
-      <File FileName="Runtime/Main.cs" Line="144" Column="1" />
-      <File FileName="Plugins/auth.stub.cs" Line="8" Column="1" />
-      <File FileName="idl/Buffer.cs" Line="8" Column="1" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ctype="Workbench" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/usr/local/src/mono/Webserver/idl/Services.cs" line="80" />

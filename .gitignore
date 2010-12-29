@@ -6,3 +6,4 @@
 *~
 *.tmp
 *.pidb
+*.idl.cs

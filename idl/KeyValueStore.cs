@@ -114,6 +114,7 @@ namespace IMVU.IDL
 					diskLog = new FileStream("KeyValue.bin", FileMode.CreateNew);
 					diskWriter = new BinaryWriter(diskLog, Encoding.UTF8);
 					diskWriter.Write(FileVersionString);
+					GC.KeepAlive(fnf);	//	ignore fnf
 				}
 			}
 		}
@@ -175,7 +176,7 @@ namespace IMVU.IDL
 		//	of that value. If you want to remove or update this data, you have to provide 
 		//	the serial version back. This prevents multiple conflicting edits to happen at 
 		//	the same time.
-		public static Dictionary<string, object> Find(string key, out long prevVersion)
+		public static dict Find(string key, out long prevVersion)
 		{
 			Buffer t = FindBuffer(key, out prevVersion);
 			if (t == null)
@@ -188,11 +189,11 @@ namespace IMVU.IDL
 		//	Store new data (if prevVersion == 0), or update existing data (if prevVersion > 0).
 		//	Return true if the value of the previous version was found and replaced, or a new 
 		//	value was stored.
-		public static bool Store(string key, Dictionary<string, object> val, long prevVersion)
+		public static bool Store(string key, dict val, long prevVersion)
 		{
 			return Store(key, val, prevVersion, -1);
 		}
-		public static bool Store(string key, Dictionary<string, object> val, long prevVersion, int lifetimeSeconds)
+		public static bool Store(string key, dict val, long prevVersion, int lifetimeSeconds)
 		{
 			Buffer text = Services.jsonf.Format(val);
 			return StoreBuffer(key, text, prevVersion, lifetimeSeconds);

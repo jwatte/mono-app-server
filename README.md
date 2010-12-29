@@ -41,10 +41,17 @@ A few data types are currently supported:
 * varchar  -- 255 chars max
 * text     -- 8191 chars max
 * bool     -- true or false
+* long     -- 64-bit integer (only 53 bits in JavaScript)
+* email    -- email address, 64 chars max
 
 Methods can be open to the world (session="false") or require a valid login (default, or 
 explicit with session="true"). There is an affordance for a named-privilege markup as well 
 but this has not been tested and there is no way to grant privileges to users (yet ?).
+
+A user needs to have all permissions listed for a method to call that method. There is an 
+optional attribute "self='paramname'" which says that this permission is not needed if the 
+operation is targeting the user himself; specifically, the 'paramname' parameter has the 
+value of the userid logged in.
 
 Possible future improvements
 ----------------------------

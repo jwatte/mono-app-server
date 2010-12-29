@@ -13,7 +13,7 @@ namespace IMVU.IDL
 		{
 		}
 		
-		public abstract IMVU.IDL.Buffer Format(Dictionary<string, object> val);
+		public abstract IMVU.IDL.Buffer Format(dict val);
 	}
 	
 	public class JSONFormatter : CallFormatter
@@ -24,7 +24,7 @@ namespace IMVU.IDL
 		
 		public static JSONFormatter Instance = new JSONFormatter();
 		
-		public override IMVU.IDL.Buffer Format(Dictionary<string, object> val)
+		public override IMVU.IDL.Buffer Format(dict val)
 		{
 			StringBuilder sb = new StringBuilder();
 			FormatObj(val, sb);
@@ -33,7 +33,14 @@ namespace IMVU.IDL
 			return ret;
 		}
 		
-		public Dictionary<string, object> Parse(IMVU.IDL.Buffer buf)
+		public string FormatAny(object obj)
+		{
+			StringBuilder sb = new StringBuilder();
+			FormatAny(obj, sb);
+			return sb.ToString();
+		}
+		
+		public dict Parse(IMVU.IDL.Buffer buf)
 		{
 			if (buf.data[buf.offset] != '{')
 			{
@@ -61,10 +68,10 @@ namespace IMVU.IDL
 			return offset;
 		}
 		
-		static Dictionary<string, object> ParseObj(byte[] data, ref int off, int end)
+		static dict ParseObj(byte[] data, ref int off, int end)
 		{
 			int offset = off;
-			Dictionary<string, object> ret = new Dictionary<string, object>();
+			dict ret = new dict();
 			while (true)
 			{
 				offset = SkipWhitespace(data, offset, end);
@@ -97,6 +104,13 @@ namespace IMVU.IDL
 			//	todo: if this is at the outer level, then any data after the first 
 			//	correct form will be ignored.
 			return ret;
+		}
+		
+		public object ParseAny(string s)
+		{
+			byte[] data = Encoding.UTF8.GetBytes(s);
+			int offset = 0;
+			return ParseAny(data, ref offset, data.Length);
 		}
 		
 		static object ParseAny(byte[] data, ref int off, int end)
@@ -256,7 +270,7 @@ namespace IMVU.IDL
 			return long.Parse(s);
 		}
 		
-		static void FormatObj(Dictionary<string, object> val, StringBuilder sb)
+		static void FormatObj(dict val, StringBuilder sb)
 		{
 			sb.Append("{");
 			string comma = "";
@@ -307,9 +321,9 @@ namespace IMVU.IDL
 				FormatStr(obj.ToString(), sb);
 				return;
 			}
-			if (obj is Dictionary<string, object>)
+			if (obj is dict)
 			{
-				FormatObj((Dictionary<string, object>)obj, sb);
+				FormatObj((dict)obj, sb);
 				return;
 			}
 			//	any enumerable turns into a list

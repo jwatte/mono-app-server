@@ -20,10 +20,10 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>false</ConsolePause>
-    <Commandlineparameters>codepath=/usr/local/src/mono/Webserver/Plugins/bin</Commandlineparameters>
+    <Commandlineparameters>codepath=/usr/local/src/mono/mono-app-server/Plugins/bin</Commandlineparameters>
     <EnvironmentVariables>
       <EnvironmentVariables>
-        <Variable name="MONO_PATH" value="/usr/local/src/mono/Webserver/idl/bin/Debug" />
+        <Variable name="MONO_PATH" value="/usr/local/src/mono/mono-app-server/idl/bin/Debug" />
       </EnvironmentVariables>
     </EnvironmentVariables>
   </PropertyGroup>

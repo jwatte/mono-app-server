@@ -108,9 +108,6 @@ namespace IMVU.IDL
 			}
 			return ret;
 		}
-
-		//	in-memory session storage
-		static Dictionary<string, UserSession> sessions = new Dictionary<string, UserSession>();
 		
 		[NonSerialized]	//	gotten from KeyValueStore
 		public long lastVersion;

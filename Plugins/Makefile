@@ -13,8 +13,14 @@ all:	$(STUBFILES) $(IDLFILES) $(APIDLLS) $(IDLDLLS)
 	apimono/bin/Debug/apimono.exe $< $@
 
 %.stub.cs:	%.xml
-	apimono/bin/Debug/apimono.exe $< /dev/null $@
-	[ -f $@ ] && touch $@
+	rm -f $@.new
+	apimono/bin/Debug/apimono.exe $< /tmp/$@.stub $@.new
+	[ -s $@.base ] || cp $@.new $@.base
+	[ -s $@ ] || cp $@.new $@
+	diff3 -a -A -m $@ $@.base $@.new > $@.merge
+	mv $@ $@~
+	mv $@.merge $@
+	cp $@.new $@.base
 
 bin/api/api_%.dll:	%.stub.cs $(IDLDLL)
 	gmcs -target:library -reference:$(abspath $(IDLDLL)) $< -out:$@ -debug
@@ -23,4 +29,7 @@ bin/idl/idl_%.dll:	%.idl.cs $(IDLDLL)
 	gmcs -target:library -reference:$(abspath $(IDLDLL)) $< -out:$@ -debug
 
 clean:
-	rm -f bin/api/* bin/idl/* *.idl.cs
+	rm -f bin/api/* bin/idl/* *.idl.cs *.new *.merge *~
+
+spotless:	clean
+	rm *.base

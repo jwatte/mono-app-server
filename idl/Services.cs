@@ -29,7 +29,7 @@ namespace IMVU.IDL
 				Console.WriteLine("ERROR: Request {0} error {1}", ictx.Http.Request.Url, f);
 				ictx.Http.Response.ContentType = "text/json";
 				ictx.Http.Response.StatusCode = 500;
-				Dictionary<string, object> ret = new Dictionary<string, object>();
+				dict ret = new dict();
 				ret.Add("message", f);
 				ret.Add("success", false);
 				IMVU.IDL.Buffer buf = jsonf.Format(ret);
@@ -48,9 +48,11 @@ namespace IMVU.IDL
 			public static ApiType t_varchar = new ApiTypeGeneric<varchar>(x => new varchar(x), x => x.ToString());
 			public static ApiType t_text = new ApiTypeGeneric<text>(x => new text(x), x => x.ToString());
 			public static ApiType t_password = new ApiTypeGeneric<password>(x => new password(x), x => x.ToString());
+			public static ApiType t_email = new ApiTypeGeneric<email>(x => new email(x), x => x.ToString());
 			public static ApiType t_idstring = new ApiTypeGeneric<idstring>(x => new idstring(x), x => x.ToString());
 			public static ApiType t_long = new ApiTypeGeneric<long>(x => long.Parse(x), x => x.ToString());
 			public static ApiType t_bool = new ApiTypeGeneric<bool>(x => bool.Parse(x), x => x.ToString().ToLowerInvariant());
+			public static ApiType t_list = new ApiTypeGeneric<list>(x => list.Parse(x), x => x.ToString());
 		}
 	}
 	
@@ -117,6 +119,19 @@ namespace IMVU.IDL
 		public password(string s) : base(s) {}
 	}
 	
+	public class email : LimitedString<email>, ILengthLimit
+	{
+		public int MaxLength { get { return 64; } }
+		public email() {}
+		public email(string s) : base(s)
+		{
+			if (!Helpers.IsValidEmailAddress(s))
+			{
+				throw new ArgumentException("email address is not properly formatted: " + s);
+			}
+		}
+	}
+	
 	public class idstring : LimitedString<idstring>, ILengthLimit
 	{
 		public int MaxLength { get { return 32; } }
@@ -136,5 +151,31 @@ namespace IMVU.IDL
 		public int MaxLength { get { return 8191; } }
 		public text() {}
 		public text(string s) : base(s) {}
+	}
+	
+	public class list : List<object>
+	{
+		public static list Parse(string s)
+		{
+			return (list)Services.jsonf.ParseAny(s);
+		}
+		
+		public override string ToString()
+		{
+			return Services.jsonf.FormatAny(this);
+		}
+	}
+	
+	public class dict : Dictionary<string, object>
+	{
+		public static dict Parse(string s)
+		{
+			return (dict)Services.jsonf.ParseAny(s);
+		}
+		
+		public override string ToString ()
+		{
+			 return Services.jsonf.FormatAny(this);
+		}
 	}
 }

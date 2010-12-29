@@ -3,6 +3,7 @@ using System;
 using System.Xml;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -139,6 +140,14 @@ namespace IMVU.IDL
 				throw new ArgumentException("Expected type " + typeof(T).FullName + " but got " + o.GetType().FullName + " in MarshalToObject");
 			}
 			return ret;
+		}
+		
+		static Regex emailre = new Regex(@"^<?[-a-z0-9_$]{1,20}([.+$][-a-z0-9_.$]{0,20})?@([-a-z0-9_.]{1,20}\.)?[-a-z0-9_]{2,20}\.[a-z]{2,4}>?$",
+		                                 RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		
+		public static bool IsValidEmailAddress(string s)
+		{
+			return emailre.IsMatch(s);
 		}
 	}
 }

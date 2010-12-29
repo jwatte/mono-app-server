@@ -138,7 +138,7 @@ namespace Runtime
 		
 		public static void HandleRequest(IMVU.IDL.IContext ictx)
 		{
-			Services.Log("Request: {0}", ictx.Http.Request.Url);
+			IMVU.IDL.Services.Log("Request: {0}", ictx.Http.Request.Url);
 			string host = ictx.Http.Request.Url.Host;
 			//	todo: verify that the app is allowed to use the service, based on the host
 			string str = ictx.Http.Request.Url.PathAndQuery;

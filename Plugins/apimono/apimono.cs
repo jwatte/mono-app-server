@@ -36,25 +36,29 @@ namespace apimono
 						Console.WriteLine("Unknown IDL root format: {0}", rootNode.Name);
 						throw new InvalidDataException("Bad XML input file");
 					}
-				}
-			}
-			using (Stream swi = new FileStream(args[1], FileMode.Create))
-			{
-				byte[] odata = idls.GetBuffer();
-				swi.Write(odata, 0, odata.Length);
-			}
-			if (args.Length == 3)
-			{
-				if (File.Exists(args[2]))
-				{
-					Console.WriteLine("Not overwriting existing stub: {0}", args[2]);
-				}
-				else
-				{
-					using (Stream sw = new FileStream(args[2], FileMode.CreateNew))
+					idl.Flush();
+					using (Stream swi = new FileStream(args[1], FileMode.Create))
 					{
-						byte[] odata = ms.GetBuffer();
-						sw.Write(odata, 0, odata.Length);
+						int len = (int)idls.Length;
+						byte[] odata = idls.GetBuffer();
+						swi.Write(odata, 0, len);
+					}
+					if (args.Length == 3)
+					{
+						stub.Flush();
+						if (File.Exists(args[2]))
+						{
+							Console.WriteLine("Not overwriting existing stub: {0}", args[2]);
+						}
+						else
+						{
+							using (Stream sw = new FileStream(args[2], FileMode.CreateNew))
+							{
+								int len = (int)ms.Length;
+								byte[] odata = ms.GetBuffer();
+								sw.Write(odata, 0, len);
+							}
+						}
 					}
 				}
 			}
@@ -96,14 +100,27 @@ namespace apimono
 				foreach (XmlNode pn in xn.SelectNodes("permission"))
 				{
 					string pname = Helpers.AttributeStr(pn, "name");
-					idl.WriteLine("            \"{0}\",", pname);
+                    string self = Helpers.AttributeStr(pn, "self", "");
+                    if (self.Length > 0)
+                    {
+                        if (null == xn.SelectSingleNode("parameter[@name='"+self+"']"))
+                        {
+                            throw new ArgumentException("permission self attribute references parameter " + 
+                                self + " which is not declared (method " + mname + ")");
+                        }
+                        idl.WriteLine("            \"self={0}|{1}\",", self, pname);
+                    }
+                    else
+                    {
+                        idl.WriteLine("            \"{0}\",", pname);
+                    }
 				}
 				idl.WriteLine("        {0},", "}");
 				idl.WriteLine("        Services.jsonf, // formatter");
 				idl.WriteLine("        new ApiParameter[] {0} // parameters", "{");
 				
 				stub.WriteLine("");
-				stub.Write("    public Dictionary<string, object> {0}(IContext ctx", mname);
+				stub.Write("    public dict {0}(IContext ctx", mname);
 				
 				foreach (XmlNode an in xn.SelectNodes("parameter"))
 				{
@@ -119,7 +136,7 @@ namespace apimono
 				
 				stub.WriteLine(")");
 				stub.WriteLine("    {0}", "{");
-				stub.WriteLine("        Dictionary<string, object> _ = new Dictionary<string, object>();");
+				stub.WriteLine("        dict _ = new dict();");
 				stub.WriteLine("        // your code goes here; add return values to '_'");
 				foreach (XmlNode rn in xn.SelectNodes("return"))
 				{
