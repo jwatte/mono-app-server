@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Runtime", "Runtime\Runtime.csproj", "{0692B400-FE18-4D67-8225-CC64F1993E38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "apimono", "Plugins\apimono\apimono.csproj", "{E757DD0F-BFDD-4BEC-ABF9-2CA1B4AD41D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "idl", "idl\idl.csproj", "{6C1AB076-C479-498D-A0C5-AD48723AF723}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0692B400-FE18-4D67-8225-CC64F1993E38}.Debug|x86.ActiveCfg = Debug|x86
+		{0692B400-FE18-4D67-8225-CC64F1993E38}.Debug|x86.Build.0 = Debug|x86
+		{0692B400-FE18-4D67-8225-CC64F1993E38}.Release|x86.ActiveCfg = Release|x86
+		{0692B400-FE18-4D67-8225-CC64F1993E38}.Release|x86.Build.0 = Release|x86
+		{6C1AB076-C479-498D-A0C5-AD48723AF723}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6C1AB076-C479-498D-A0C5-AD48723AF723}.Debug|x86.Build.0 = Debug|Any CPU
+		{6C1AB076-C479-498D-A0C5-AD48723AF723}.Release|x86.ActiveCfg = Release|Any CPU
+		{6C1AB076-C479-498D-A0C5-AD48723AF723}.Release|x86.Build.0 = Release|Any CPU
+		{E757DD0F-BFDD-4BEC-ABF9-2CA1B4AD41D3}.Debug|x86.ActiveCfg = Debug|x86
+		{E757DD0F-BFDD-4BEC-ABF9-2CA1B4AD41D3}.Debug|x86.Build.0 = Debug|x86
+		{E757DD0F-BFDD-4BEC-ABF9-2CA1B4AD41D3}.Release|x86.ActiveCfg = Release|x86
+		{E757DD0F-BFDD-4BEC-ABF9-2CA1B4AD41D3}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Runtime\Runtime.csproj
+	EndGlobalSection
+EndGlobal

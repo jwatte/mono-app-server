@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0692B400-FE18-4D67-8225-CC64F1993E38}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Runtime</RootNamespace>
+    <AssemblyName>Runtime</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <ConsolePause>false</ConsolePause>
+    <Commandlineparameters>codepath=/usr/local/src/mono/Webserver/Plugins/bin</Commandlineparameters>
+    <EnvironmentVariables>
+      <EnvironmentVariables>
+        <Variable name="MONO_PATH" value="/usr/local/src/mono/Webserver/idl/bin/Debug" />
+      </EnvironmentVariables>
+    </EnvironmentVariables>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <Externalconsole>true</Externalconsole>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Web" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ApiInstance.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties InternalTargetFrameworkVersion="3.5">
+        <Policies>
+          <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
+          <CSharpFormattingPolicy StatementBraceStyle="NextLine" IfElseBraceForcement="AddBraces" ForBraceForcement="AddBraces" ForEachBraceForcement="AddBraces" WhileBraceForcement="AddBraces" UsingBraceForcement="AddBraces" FixedBraceForcement="AddBraces" PlaceElseOnNewLine="True" PlaceElseIfOnNewLine="True" PlaceCatchOnNewLine="True" PlaceFinallyOnNewLine="True" PlaceWhileOnNewLine="True" PlaceArrayInitializersOnNewLine="AlwaysNewLine" BeforeMethodCallParentheses="False" BeforeMethodDeclarationParentheses="False" BeforeConstructorDeclarationParentheses="False" BeforeDelegateDeclarationParentheses="False" NewParentheses="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+          <TextStylePolicy FileWidth="120" NoTabsAfterNonTabs="True" RemoveTrailingWhitespace="True" inheritsSet="VisualStudio" inheritsScope="text/plain" scope="text/plain" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <ProjectReference Include="..\idl\idl.csproj">
+      <Project>{6C1AB076-C479-498D-A0C5-AD48723AF723}</Project>
+      <Name>idl</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

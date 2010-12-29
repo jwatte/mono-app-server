@@ -1,0 +1,8 @@
+*.mdb
+*.dll
+*.exe
+*.swp
+*.bin
+*~
+*.tmp
+*.pidb
