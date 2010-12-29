@@ -9,27 +9,27 @@ public class auth {
 
     public dict signin(IContext ctx, idstring userid, password password)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("token", Helpers.Default<idstring>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("token", Helpers.Default<idstring>());
+        return Return;
     } // signin
 
 
     public dict signout(IContext ctx)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        return Return;
     } // signout
 
 
     public dict verify(IContext ctx)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("status", Helpers.Default<bool>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", Helpers.Default<bool>());
+        return Return;
     } // verify
 
 }; // class

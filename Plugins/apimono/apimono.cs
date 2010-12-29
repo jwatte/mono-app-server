@@ -95,6 +95,7 @@ namespace apimono
 				string mname = Helpers.AttributeStr(xn, "name");
 				idl.WriteLine("    new ApiMethod(\"{0}\", // name", mname);
 				bool mauth = Helpers.AttributeBool(xn, "session", true);
+				string mtype = Helpers.AttributeStr(xn, "type", "dict");
 				idl.WriteLine("        {0}, // session", mauth ? "true" : "false");
 				idl.WriteLine("        new string[] {0} // permissions", "{");
 				foreach (XmlNode pn in xn.SelectNodes("permission"))
@@ -116,11 +117,11 @@ namespace apimono
                     }
 				}
 				idl.WriteLine("        {0},", "}");
-				idl.WriteLine("        Services.jsonf, // formatter");
+				idl.WriteLine("        Services.{0}f, // formatter", Helpers.AttributeStr(xn, "formatter", "json"));
 				idl.WriteLine("        new ApiParameter[] {0} // parameters", "{");
 				
 				stub.WriteLine("");
-				stub.Write("    public dict {0}(IContext ctx", mname);
+				stub.Write("    public {1} {0}(IContext ctx", mname, mtype);
 				
 				foreach (XmlNode an in xn.SelectNodes("parameter"))
 				{
@@ -136,15 +137,22 @@ namespace apimono
 				
 				stub.WriteLine(")");
 				stub.WriteLine("    {0}", "{");
-				stub.WriteLine("        dict _ = new dict();");
-				stub.WriteLine("        // your code goes here; add return values to '_'");
-				foreach (XmlNode rn in xn.SelectNodes("return"))
+				stub.WriteLine("        dict Return = new {0}();", mtype);
+				stub.WriteLine("        // your code goes here; add return values to 'Return'");
+				if (mtype == "dict")
 				{
-					string rname = Helpers.AttributeStr(rn, "name");
-					string rtype = Helpers.AttributeStr(rn, "type");
-					stub.WriteLine("        _.Add(\"{0}\", Helpers.Default<{1}>());", rname, rtype);
+					foreach (XmlNode rn in xn.SelectNodes("return"))
+					{
+						string rname = Helpers.AttributeStr(rn, "name");
+						string rtype = Helpers.AttributeStr(rn, "type");
+						stub.WriteLine("        Return.Add(\"{0}\", Helpers.Default<{1}>());", rname, rtype);
+					}
 				}
-				stub.WriteLine("        return _;");
+				else if (xn.SelectNodes("return").Count > 0)
+				{
+					throw new InvalidDataException("Method " + mname + " of type " + mtype + " cannot have a 'return' element.");
+				}
+				stub.WriteLine("        return Return;");
 				stub.WriteLine("    {0} // {1}", "}", mname);
 				stub.WriteLine("");
 			}

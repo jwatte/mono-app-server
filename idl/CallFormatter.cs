@@ -13,7 +13,7 @@ namespace IMVU.IDL
 		{
 		}
 		
-		public abstract IMVU.IDL.Buffer Format(dict val);
+		public abstract IMVU.IDL.Buffer Format(object val);
 	}
 	
 	public class JSONFormatter : CallFormatter
@@ -24,12 +24,13 @@ namespace IMVU.IDL
 		
 		public static JSONFormatter Instance = new JSONFormatter();
 		
-		public override IMVU.IDL.Buffer Format(dict val)
+		public override IMVU.IDL.Buffer Format(object valo)
 		{
+			dict val = (dict)valo;
 			StringBuilder sb = new StringBuilder();
 			FormatObj(val, sb);
 			byte[] buf = System.Text.Encoding.UTF8.GetBytes(sb.ToString());
-			IMVU.IDL.Buffer ret = new IMVU.IDL.Buffer(buf, 0, buf.Length);
+			IMVU.IDL.Buffer ret = new IMVU.IDL.Buffer(buf, 0, buf.Length, "text/json");
 			return ret;
 		}
 		

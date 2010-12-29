@@ -5,9 +5,8 @@
         <parameter name="password" type="password"/>
         <parameter name="realname" type="varchar"/>
         <parameter name="email" type="email"/>
-        <parameter name="group" type="idstring"/>
         <return name="status" type="bool"/>
-        <return name="activationkey" type="idstring"/>
+        <return name="message" type="varchar"/>
     </method>
     <method name="activate" session="false">
         <parameter name="userid" type="idstring"/>
@@ -27,7 +26,6 @@
         <return name="realname" type="varchar"/>
         <return name="email" type="email"/>
         <return name="activationkey" type="idstring"/>
-        <return name="group" type="idstring"/>
         <return name="permissions" type="list"/>
     </method>
     <method name="grant">
@@ -42,7 +40,7 @@
         <parameter name="permission" type="idstring"/>
         <return name="status" type="bool"/>
     </method>
-    <method name="test">
+    <method name="test" formatter="json">
         <permission name="test-permission" self="userid"/>
         <parameter name="userid" type="idstring"/>
         <parameter name="permission" type="idstring"/>

@@ -9,35 +9,36 @@ public class auth {
 
     public Dictionary<string, object> signin(IContext ctx, idstring userid, password password)
     {
-        Dictionary<string, object> _ = new Dictionary<string, object>();
-        // your code goes here; add return values to '_'
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
         if (userid.str != "jwatte" || password.str != "123456")
         {
             throw new InvalidOperationException("Bad user name or password.");
         }
         UserSession sess = UserSession.Create(ctx, userid.str);
-        _.Add("token", new idstring(sess.sid));
-        return _;
+        Return.Add("token", new idstring(sess.sid));
+        return Return;
     } // signin
 
 
     public Dictionary<string, object> signout(IContext ctx)
     {
-        Dictionary<string, object> _ = new Dictionary<string, object>();
+        dict Return = new dict();
 		if (ctx.Session != null)
 		{
 			ctx.Session.Invalidate(ctx);
 		}
-        // your code goes here; add return values to '_'
-        return _;
+        // your code goes here; add return values to 'Return'
+        return Return;
     } // signout
 
 
     public Dictionary<string, object> verify(IContext ctx)
     {
-        Dictionary<string, object> _ = new Dictionary<string, object>();
-        _.Add("status", true);
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", true);
+        return Return;
     } // verify
 
 }; // class

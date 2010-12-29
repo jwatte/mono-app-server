@@ -7,73 +7,72 @@ using System.Collections.Generic;
 
 public class user {
 
-    public dict create(IContext ctx, idstring userid, password password, varchar realname, email email, idstring group)
+    public dict create(IContext ctx, idstring userid, password password, varchar realname, email email)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("status", Helpers.Default<bool>());
-        _.Add("activationkey", Helpers.Default<idstring>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", Helpers.Default<bool>());
+        Return.Add("message", Helpers.Default<varchar>());
+        return Return;
     } // create
 
 
     public dict activate(IContext ctx, idstring userid, idstring activationkey)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("status", Helpers.Default<bool>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", Helpers.Default<bool>());
+        return Return;
     } // activate
 
 
     public dict deactivate(IContext ctx, idstring userid)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("status", Helpers.Default<bool>());
-        _.Add("activationkey", Helpers.Default<idstring>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", Helpers.Default<bool>());
+        Return.Add("activationkey", Helpers.Default<idstring>());
+        return Return;
     } // deactivate
 
 
     public dict get(IContext ctx, idstring userid)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("status", Helpers.Default<bool>());
-        _.Add("realname", Helpers.Default<varchar>());
-        _.Add("email", Helpers.Default<email>());
-        _.Add("activationkey", Helpers.Default<idstring>());
-        _.Add("group", Helpers.Default<idstring>());
-        _.Add("permissions", Helpers.Default<list>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", Helpers.Default<bool>());
+        Return.Add("realname", Helpers.Default<varchar>());
+        Return.Add("email", Helpers.Default<email>());
+        Return.Add("activationkey", Helpers.Default<idstring>());
+        Return.Add("permissions", Helpers.Default<list>());
+        return Return;
     } // get
 
 
     public dict grant(IContext ctx, idstring userid, idstring permission)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("status", Helpers.Default<bool>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", Helpers.Default<bool>());
+        return Return;
     } // grant
 
 
     public dict revoke(IContext ctx, idstring userid, idstring permission)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("status", Helpers.Default<bool>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", Helpers.Default<bool>());
+        return Return;
     } // revoke
 
 
     public dict test(IContext ctx, idstring userid, idstring permission)
     {
-        dict _ = new dict();
-        // your code goes here; add return values to '_'
-        _.Add("status", Helpers.Default<bool>());
-        return _;
+        dict Return = new dict();
+        // your code goes here; add return values to 'Return'
+        Return.Add("status", Helpers.Default<bool>());
+        return Return;
     } // test
 
 }; // class

@@ -53,7 +53,7 @@ namespace IMVU.IDL
 				args[i + 1] = parameters[i].type.ConvertFromString(val);
 			}
 			args[0] = ictx;
-			dict ret = (dict)methodInfo.Invoke(owner, args);
+			object ret = methodInfo.Invoke(owner, args);
 			//	todo: verify that the return value matches spec!
 			if (ret != null)
 			{

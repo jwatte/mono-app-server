@@ -6,18 +6,19 @@ APIDLLS:=$(patsubst %.stub.cs,bin/api/api_%.dll,$(STUBFILES))
 IDLDLLS:=$(patsubst %.idl.cs,bin/idl/idl_%.dll,$(IDLFILES))
 
 IDLDLL:=../idl/bin/Debug/idl.dll
+apimono:=apimono/bin/Debug/apimono.exe
 
 all:	$(STUBFILES) $(IDLFILES) $(APIDLLS) $(IDLDLLS)
 
-%.idl.cs:	%.xml
+%.idl.cs:	%.xml $(apimono)
 	apimono/bin/Debug/apimono.exe $< $@
 
-%.stub.cs:	%.xml
+%.stub.cs:	%.xml $(apimono)
 	rm -f $@.new
-	apimono/bin/Debug/apimono.exe $< /tmp/$@.stub $@.new
+	$(apimono) $< /tmp/$@.stub $@.new
 	[ -s $@.base ] || cp $@.new $@.base
 	[ -s $@ ] || cp $@.new $@
-	diff3 -a -A -m $@ $@.base $@.new > $@.merge
+	-@diff3 -a -A -m $@ $@.base $@.new > $@.merge || echo "WARNING: conflicts in updated stubs"
 	mv $@ $@~
 	mv $@.merge $@
 	cp $@.new $@.base
