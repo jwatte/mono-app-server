@@ -36,6 +36,37 @@ namespace IMVU.IDL
 		public UserSession Session { get; set; }
 		
 		public HttpListenerContext Http { get { return ctx; } }
+		
+		public void VerifyPermission(string permission, string key, string keyName, string opName)
+		{
+			if (String.IsNullOrEmpty(permission))
+			{
+				return;
+			}
+			UserSession sess = Session;
+			if (sess == null)
+			{
+				throw new UnauthorizedAccessException("Permission " + permission + " is required");
+			}
+			string[] split = permission.Split('|');
+			string self = null;
+			if (key != null && keyName != null)
+			{
+				self = "self(" + keyName + ")";
+			}
+			foreach (string s in split)
+			{
+				if (s == self && key == sess.userName)
+				{
+					return;
+				}
+				if (sess.HasPermission(s))
+				{
+					return;
+				}
+			}
+			throw new UnauthorizedAccessException("Permission '" + permission + "' is required for " + opName);
+		}
 	}
 	
 }

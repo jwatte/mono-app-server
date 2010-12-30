@@ -4,6 +4,10 @@
 using IMVU.IDL;
 using System;
 using System.Collections.Generic;
+using entity;
+
+namespace api
+{
 
 public class user {
 
@@ -11,17 +15,61 @@ public class user {
     {
         dict Return = new dict();
         // your code goes here; add return values to 'Return'
-        Return.Add("status", Helpers.Default<bool>());
-        Return.Add("message", Helpers.Default<varchar>());
+		bool status = false;
+		string message = "unknown error";
+		long pver;
+		if (userid.str.Length < 5 || !Helpers.IsValidId(userid.str))
+		{
+			message = "bad user id format: non-special characters, at least length 5 required";
+		}
+		else if (KeyValueStore.Find("user:" + userid, out pver) != null)
+		{
+			message = "the user id " + userid + " already exists";
+		}
+		else if (KeyValueStore.Find("email:" + email, out pver) != null)
+		{
+			message = "the email address " + email + " is already tied to another user id";
+		}
+		else
+		{
+			dict user = new dict();
+			user.Add("userid", userid.str);
+			user.Add("password", password.str);
+			user.Add("realname", realname.str);
+			user.Add("email", email.str);
+			user.Add("activationkey", Helpers.RandomString(24));
+			if (KeyValueStore.Store("user:"+userid, user, 0))
+			{
+				message = "user " + userid + " created";
+				status = true;
+			}
+			else
+			{
+				message = "database error when trying to create user " + userid;
+			}
+		}
+        Return.Add("status", status);
+        Return.Add("message", message);
         return Return;
     } // create
 
 
-    public dict activate(IContext ctx, idstring userid, idstring activationkey)
+    public dict activate(IContext ctx, idstring userid, varchar activationkey)
     {
         dict Return = new dict();
         // your code goes here; add return values to 'Return'
-        Return.Add("status", Helpers.Default<bool>());
+		bool status = false;
+		long pver;
+		dict u = KeyValueStore.Find("user:" + userid, out pver);
+		if (u != null && activationkey.str.Length == 24)
+		{
+			if (u["activationkey"].Equals(activationkey.str))
+			{
+				u["activationkey"] = "";
+				status = KeyValueStore.Store("user:" + userid, u, pver);
+			}
+		}
+        Return.Add("status", status);
         return Return;
     } // activate
 
@@ -31,7 +79,7 @@ public class user {
         dict Return = new dict();
         // your code goes here; add return values to 'Return'
         Return.Add("status", Helpers.Default<bool>());
-        Return.Add("activationkey", Helpers.Default<idstring>());
+        Return.Add("activationkey", Helpers.Default<varchar>());
         return Return;
     } // deactivate
 
@@ -43,7 +91,7 @@ public class user {
         Return.Add("status", Helpers.Default<bool>());
         Return.Add("realname", Helpers.Default<varchar>());
         Return.Add("email", Helpers.Default<email>());
-        Return.Add("activationkey", Helpers.Default<idstring>());
+        Return.Add("activationkey", Helpers.Default<varchar>());
         Return.Add("permissions", Helpers.Default<list>());
         return Return;
     } // get
@@ -76,3 +124,7 @@ public class user {
     } // test
 
 }; // class
+
+} // namespace
+
+//  end of user

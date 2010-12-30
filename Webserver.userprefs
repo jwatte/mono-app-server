@@ -1,13 +1,32 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="idl/Services.cs" ctype="Workbench">
+    <Files>
+      <File FileName="Plugins/user.xml" Line="15" Column="37" />
+      <File FileName="Plugins/user.stub.cs" Line="83" Column="1" />
+      <File FileName="idl/CallFormatter.cs" Line="217" Column="1" />
+      <File FileName="Plugins/apimono/apimono.cs" Line="220" Column="1" />
+      <File FileName="idl/WrapperBase.cs" Line="147" Column="100" />
+      <File FileName="Runtime/ApiInstance.cs" Line="87" Column="26" />
+      <File FileName="idl/Entity.cs" Line="1" Column="1" />
+      <File FileName="idl/IContext.cs" Line="13" Column="90" />
+      <File FileName="idl/Context.cs" Line="6" Column="32" />
+      <File FileName="idl/UserSession.cs" Line="126" Column="1" />
+      <File FileName="Plugins/Makefile" Line="15" Column="1" />
+      <File FileName="idl/Counter.cs" Line="55" Column="1" />
+      <File FileName="idl/ApiMethod.cs" Line="82" Column="36" />
+      <File FileName="idl/Services.cs" Line="41" Column="30" />
+      <File FileName="Runtime/Main.cs" Line="136" Column="1" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="apimono" expanded="True" />
-          <Node name="Plugins" expanded="True">
-            <Node name="user.xml" selected="True" />
+          <Node name="idl" expanded="True">
+            <Node name="Services.cs" selected="True" />
           </Node>
+          <Node name="Plugins" expanded="True" />
+          <Node name="Runtime" expanded="True" />
         </State>
       </Pad>
     </Pads>
@@ -18,6 +37,7 @@
       <Breakpoint file="/usr/local/src/mono/Webserver/idl/Services.cs" line="85" />
       <Breakpoint file="/usr/local/src/mono/Webserver/Runtime/Main.cs" line="134" />
       <Breakpoint file="/usr/local/src/mono/Webserver/idl/KeyValueStore.cs" line="143" />
+      <Breakpoint file="/usr/local/src/mono/mono-app-server/Plugins/apimono/apimono.cs" line="50" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore" />

@@ -4,6 +4,10 @@
 using IMVU.IDL;
 using System;
 using System.Collections.Generic;
+using entity;
+
+namespace api
+{
 
 public class auth {
 
@@ -42,3 +46,7 @@ public class auth {
     } // verify
 
 }; // class
+
+} // namespace
+
+//  end of auth

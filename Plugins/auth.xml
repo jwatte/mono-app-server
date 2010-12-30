@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
-<interface name="auth" version="2010-12-27 11:00">
-    <method name="signin" session="false">
-        <parameter name="userid" type="idstring"/>
-        <parameter name="password" type="password"/>
-        <return name="token" type="idstring"/>
-    </method>
-    <method name="signout" session="false">
-    </method>
-    <method name="verify">
-        <return name="status" type="bool"/>
-    </method>
-</interface>
+<idl>
+	<interface name="auth" version="2010-12-27 11:00">
+	    <method name="signin" session="false">
+	        <parameter name="userid" type="idstring"/>
+	        <parameter name="password" type="password"/>
+	        <return name="token" type="idstring"/>
+	    </method>
+	    <method name="signout" session="false">
+	    </method>
+	    <method name="verify">
+	        <return name="status" type="bool"/>
+	    </method>
+	</interface>
+</idl>

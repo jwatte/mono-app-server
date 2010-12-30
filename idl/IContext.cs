@@ -10,6 +10,7 @@ namespace IMVU.IDL
 		IPAddress PeerAddress { get; }
 		UserSession Session { get; set; }
 		HttpListenerContext Http { get; }
+		void VerifyPermission(string permission, string keyValue, string keyName, string opName);
 	}
 }
 

@@ -149,5 +149,12 @@ namespace IMVU.IDL
 		{
 			return emailre.IsMatch(s);
 		}
+
+		static Regex idre = new Regex(@"^[a-z_][a-z0-9_]*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		
+		public static bool IsValidId(string s)
+		{
+			return idre.IsMatch(s);
+		}
 	}
 }

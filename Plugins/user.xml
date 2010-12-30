@@ -1,49 +1,60 @@
 <?xml version="1.0"?>
-<interface name="user" version="2010-12-28 23:00">
-    <method name="create" session="false">
-        <parameter name="userid" type="idstring"/>
-        <parameter name="password" type="password"/>
-        <parameter name="realname" type="varchar"/>
-        <parameter name="email" type="email"/>
-        <return name="status" type="bool"/>
-        <return name="message" type="varchar"/>
-    </method>
-    <method name="activate" session="false">
-        <parameter name="userid" type="idstring"/>
-        <parameter name="activationkey" type="idstring"/>
-        <return name="status" type="bool"/>
-    </method>
-    <method name="deactivate">
-        <permission name="deactivate-user" self="userid"/>
-        <parameter name="userid" type="idstring"/>
-        <return name="status" type="bool"/>
-        <return name="activationkey" type="idstring"/>
-    </method>
-    <method name="get">
-        <permission name="get-user" self="userid"/>
-        <parameter name="userid" type="idstring"/>
-        <return name="status" type="bool"/>
-        <return name="realname" type="varchar"/>
-        <return name="email" type="email"/>
-        <return name="activationkey" type="idstring"/>
-        <return name="permissions" type="list"/>
-    </method>
-    <method name="grant">
-        <permission name="grant-permission"/>
-        <parameter name="userid" type="idstring"/>
-        <parameter name="permission" type="idstring"/>
-        <return name="status" type="bool"/>
-    </method>
-    <method name="revoke">
-        <permission name="revoke-permission"/>
-        <parameter name="userid" type="idstring"/>
-        <parameter name="permission" type="idstring"/>
-        <return name="status" type="bool"/>
-    </method>
-    <method name="test" formatter="json">
-        <permission name="test-permission" self="userid"/>
-        <parameter name="userid" type="idstring"/>
-        <parameter name="permission" type="idstring"/>
-        <return name="status" type="bool"/>
-    </method>
-</interface>
+<idl>
+	<interface name="user" version="2010-12-28 23:00">
+		<use-entity name="user"/>
+	    <method name="create" session="false">
+	        <parameter name="userid" type="idstring"/>
+	        <parameter name="password" type="password"/>
+	        <parameter name="realname" type="varchar"/>
+	        <parameter name="email" type="email"/>
+	        <return name="status" type="bool"/>
+	        <return name="message" type="varchar"/>
+	    </method>
+	    <method name="activate" session="false">
+	        <parameter name="userid" type="idstring"/>
+	        <parameter name="activationkey" type="varchar"/>
+	        <return name="status" type="bool"/>
+	    </method>
+	    <method name="deactivate">
+	        <permission name="deactivate-user" self="userid"/>
+	        <parameter name="userid" type="idstring"/>
+	        <return name="status" type="bool"/>
+	        <return name="activationkey" type="varchar"/>
+	    </method>
+	    <method name="get">
+	        <permission name="get-user" self="userid"/>
+	        <parameter name="userid" type="idstring"/>
+	        <return name="status" type="bool"/>
+	        <return name="realname" type="varchar"/>
+	        <return name="email" type="email"/>
+	        <return name="activationkey" type="varchar"/>
+	        <return name="permissions" type="list"/>
+	    </method>
+	    <method name="grant">
+	        <permission name="grant-permission"/>
+	        <parameter name="userid" type="idstring"/>
+	        <parameter name="permission" type="idstring"/>
+	        <return name="status" type="bool"/>
+	    </method>
+	    <method name="revoke">
+	        <permission name="revoke-permission"/>
+	        <parameter name="userid" type="idstring"/>
+	        <parameter name="permission" type="idstring"/>
+	        <return name="status" type="bool"/>
+	    </method>
+	    <method name="test" formatter="json">
+	        <permission name="test-permission" self="userid"/>
+	        <parameter name="userid" type="idstring"/>
+	        <parameter name="permission" type="idstring"/>
+	        <return name="status" type="bool"/>
+	    </method>
+	</interface>
+	<entity name="user" key="userid">
+		<permission name="get-user" self="userid"/>
+		<property name="userid" type="idstring"/>
+		<property name="password" type="password"/>
+		<property name="realname" type="varchar"/>
+		<property name="email" type="email"/>
+		<property name="activationkey" type="varchar"/>
+	</entity>
+</idl>

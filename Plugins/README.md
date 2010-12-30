@@ -18,12 +18,22 @@ used to the language and environment in question will feel at home within the ge
 code.
 
 XML Elements
-----------
+------------
+
+* Element: idl
+* Description: The root-level element that encapsulates some number of interfaces and 
+entities.
+* Context: (document)
+* Attributes:
+    * version: datetime: optional, version of IDL schema
+* Children:
+    * interface
+    * entity
 
 * Element: interface
 * Description: The description of an interface, including documentation and all the 
 methods, permissions, and return values used by the interface.
-* Context: (root)
+* Context: idl
 * Attributes:
     * name: idstring: name of the interface (used for language identifiers)
     * version: datetime: version of the interface (used for versioning)
@@ -91,6 +101,17 @@ precision or may have to treat this as a string.
 * list: a list of objects; mapped to JavaScript [] arrays
 * dict: a key/value map from string-valued keys to objects; mapped to JavaScript objects
 
+Formatters
+----------
+
+A runtime supports different output formats for the result of a method call. The default 
+is for a method to return a dict, and get formatted to "json" for transmission over a 
+network. However, a method may return "object" data, which means any kind of object, or 
+any other type as recognized by the system. Similarly, the object may be formatted using 
+a "raw" formatter to not transcode it, for example useful for byte arrays representing 
+encoded images. There is a runtime-defined mechanism to tie a MIME type to a raw return 
+value, which would be returned by a HTTP server implementing the interface.
+
 Todo
 ----
 
@@ -100,6 +121,5 @@ into two separate types.
 
 User defined types.
 
-Entity support for object/datastore mapping.
-
+Entity support for object/datastore mapping; also as data types.
 

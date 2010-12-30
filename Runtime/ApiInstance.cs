@@ -11,11 +11,13 @@ namespace Runtime
 {
 	public class ApiInstance
 	{
-		//	codebase/idl/somename.dll contains generated API wrapper for somename
-		//	codebase/api/somename.dll contains actual user-written code for API
+        static Counter api_counter = new Counter("api", "number of APIs installed");
+
+		//	codebase/idl/idl.somename.dll contains generated API wrapper for somename
+		//	codebase/api/api.somename.dll contains actual user-written code for API
 		private ApiInstance(string name, string codepath)
 		{
-			path = Path.Combine(Path.Combine(codepath, "idl"), "idl_" + name + ".dll");
+			path = Path.Combine(Path.Combine(codepath, "idl"), "idl." + name + ".dll");
 			//	todo: for runtime code replacement, use appdomains and refcount active requests
 			assy = Assembly.LoadFile(path);
 			if (assy == null)
@@ -26,10 +28,10 @@ namespace Runtime
 			foreach (Type t in assy.GetExportedTypes())
 			{
 				Console.WriteLine("Examining type {0}", t.Name);
-				if (t.Name == name && typeof(WrapperBase).IsAssignableFrom(t))
+				if ((t.Name == name || t.Name == "idl." + name) && typeof(WrapperBase).IsAssignableFrom(t))
 				{
 					Console.WriteLine("Found type {0}", t.Name);
-					wrapper = (WrapperBase)assy.CreateInstance(name);
+					wrapper = (WrapperBase)assy.CreateInstance(t.FullName);
 					wrapper.CodePath = codepath;
 					wrapper.Initialize();
 					break;
@@ -39,13 +41,14 @@ namespace Runtime
 			{
 				throw new FileNotFoundException("Could not instantiate wrapper type: " + path);
 			}
+            api_counter.Count();
 		}
 		
 		public static long NowTicks()
 		{
 			return DateTime.Now.Ticks;
 		}
-		
+
 		public IMVU.IDL.Buffer CallMethod(string method, NameValueCollection p, IContext ictx)
 		{
 			string scook = ictx.GetCookie("session");

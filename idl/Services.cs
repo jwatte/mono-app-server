@@ -20,11 +20,14 @@ namespace IMVU.IDL
 			Console.WriteLine("EXCEPTION: {0}", f);
 			throw new InvalidOperationException(f);
 		}
-		
+
+        static Counter error_counter = new Counter("services.error", "number of errors reported to log");
+
 		public static void Error(IContext ictx, string fmt, params object[] data)
 		{
 			try
 			{
+                error_counter.Count();
 				string f = String.Format(fmt, data);
 				Console.WriteLine("ERROR: Request {0} error {1}", ictx.Http.Request.Url, f);
 				ictx.Http.Response.ContentType = "text/json";
@@ -33,7 +36,7 @@ namespace IMVU.IDL
 				ret.Add("message", f);
 				ret.Add("success", false);
 				IMVU.IDL.Buffer buf = jsonf.Format(ret);
-				ictx.Http.Response.Close(buf.data, false);
+				ictx.Http.Response.Close(buf.data, true);
 			}
 			catch (System.Exception x)
 			{
@@ -53,6 +56,7 @@ namespace IMVU.IDL
 			public static ApiType t_long = new ApiTypeGeneric<long>(x => long.Parse(x), x => x.ToString());
 			public static ApiType t_bool = new ApiTypeGeneric<bool>(x => bool.Parse(x), x => x.ToString().ToLowerInvariant());
 			public static ApiType t_list = new ApiTypeGeneric<list>(x => list.Parse(x), x => x.ToString());
+			public static ApiType t_dict = new ApiTypeGeneric<dict>(x => dict.Parse(x), x => x.ToString());
 		}
 	}
 	

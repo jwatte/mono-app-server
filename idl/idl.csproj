@@ -47,6 +47,8 @@
     <Compile Include="IContext.cs" />
     <Compile Include="Context.cs" />
     <Compile Include="KeyValueStore.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="Counter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

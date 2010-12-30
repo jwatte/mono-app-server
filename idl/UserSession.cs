@@ -102,11 +102,27 @@ namespace IMVU.IDL
 		public bool HasPermission(string perm)
 		{
 			bool ret = false;
-			if (!permissions.TryGetValue(perm, out ret))
+			if (permissions.ContainsKey("*"))
 			{
-				return false;
+				//	the super-everything permission
+				return true;
 			}
-			return ret;
+			if (permissions.TryGetValue(perm, out ret))
+			{
+				//	the specific permission
+				return ret;
+			}
+			if (perm.Contains("-"))
+			{
+				//	for create-blah, read-blah, etc, allow *-blah permissions
+				perm = "*" + perm.Substring(perm.IndexOf('-'));
+				if (permissions.TryGetValue(perm, out ret))
+				{
+					return ret;
+				}
+			}
+			//	OK, so this really isn't meant to be
+			return false;
 		}
 		
 		[NonSerialized]	//	gotten from KeyValueStore

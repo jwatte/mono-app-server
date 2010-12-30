@@ -56,6 +56,9 @@ value of the userid logged in.
 Possible future improvements
 ----------------------------
 
+* Make all requests return a byte array -- writing to the output stream should be bad.
+Perhaps wrap the Http request/response in a layer that only exposes what is directly 
+needed and that buffers any output using a MemoryStream?
 * Fold in JavaScript client-side API wrapper generator.
 * Write some useful plug-ins.
 * Write a real user authentication plug-in.

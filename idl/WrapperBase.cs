@@ -10,9 +10,13 @@ namespace IMVU.IDL
 {
 	public abstract class WrapperBase
 	{
+        static Counter wrapper_counter = new Counter("api.wrapper", "number of API wrappers installed");
+
 		public WrapperBase(string name)
 		{
 			this.name = name;
+            error_counter = new Counter("api." + this.name + ".error", "number of errors dispatching within API");
+            permission_counter = new Counter("api." + this.name + ".error.permission", "number of permission errors in API invocation");
 		}
 
 		public abstract void Initialize();
@@ -52,19 +56,21 @@ namespace IMVU.IDL
 				am.methodInfo = mi;
 				this.methods.Add(am.name, am);
 			}
+            //  I'm good!
+            wrapper_counter.Count();
 		}
 		
 		void LoadImplementationClass()
 		{
 			Console.WriteLine("LoadImplementationClass(); CodePath = {0}", CodePath);
-			string path = Path.Combine(Path.Combine(CodePath, "api"), "api_" + name + ".dll");
+			string path = Path.Combine(Path.Combine(CodePath, "api"), "api." + name + ".dll");
 			Assembly implAssy = Assembly.LoadFile(path);
 			if (implAssy == null)
 			{
 				Console.WriteLine("assembly " + path + " not loadable");
 				return;
 			}
-			implementation = implAssy.CreateInstance(name);
+			implementation = implAssy.CreateInstance("api." + name);
 			Console.WriteLine("created {0} from {1}", implementation.GetType().FullName, implAssy.FullName);
 			if (implementation == null)
 			{
@@ -135,19 +141,29 @@ namespace IMVU.IDL
 			return true;
 		}
 
+        Counter error_counter;
+        Counter permission_counter;
+
+        static Counter call_counter = new Counter("api.wrapper.call", "total number of wrapped API calls");
+
 		public IMVU.IDL.Buffer CallMethodForUser(UserSession sess, string method, NameValueCollection p, IContext ictx)
 		{
 			ApiMethod am;
 			if (!methods.TryGetValue(method, out am))
 			{
+                error_counter.Count();
 				Services.Error(ictx, "no such method: {0}", method);
 				return null;
 			}
 			if (!am.ValidateUser(sess))
 			{
+                permission_counter.Count();
 				Services.Error(ictx, "permission denied for method: {0}", method);
 				return null;
 			}
+
+            call_counter.Count();
+
 			return am.Invoke(implementation, sess, p, ictx);
 		}
 		

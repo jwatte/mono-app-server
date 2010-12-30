@@ -1,65 +1,180 @@
+
 using System;
 using System.Xml;
 using IMVU.IDL;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace apimono
 {
 	class MainClass
 	{
+		static void usage()
+		{
+			Console.WriteLine("Usage: apimono input.xml [-idl[:%.idl.cs]] [-stub[:%.stub.cs]] [-entity[:%.entity.cs]]");
+			System.Environment.Exit(-1);
+		}
+		
+		static string GetPat(string[] a, string dflt)
+		{
+			if (a.Length != 2)
+			{
+				return dflt;
+			}
+			if (a[1].Length < 1)
+			{
+				Console.WriteLine("Pattern for {0} cannot be empty", a[0]);
+				usage();
+			}
+			return a[1];
+		}
+		
 		public static void Main (string[] args)
 		{
-			if ((args.Length != 3 && args.Length != 2) || args[0][0] == '-')
+			if (args.Length < 2 || args[0][0] == '-')
 			{
-				Console.WriteLine("Usage: apimono input.xml output.idl.cs [output.stub.cs]");
-				return;
+				usage();
 			}
-			XmlDocument xd = new XmlDocument();
-			xd.Load(args[0]);
-			MemoryStream idls = new MemoryStream();
-			MemoryStream ms = new MemoryStream();
-			using (StreamWriter idl = new StreamWriter(idls))
+			string inputfilename = null;
+			string idlpat = null;
+			string stubpat = null;
+			string entitypat = null;
+			foreach (string s in args)
 			{
-				using (StreamWriter stub = new StreamWriter(ms))
+				if (inputfilename == null)
 				{
-					XmlNode rootNode = xd.FirstChild.NextSibling;
-					if (rootNode.Name == "interface")
+					inputfilename = s;
+				}
+				else
+				{
+					string[] arg = s.Split(new char[] { ':' }, 2);
+					if (arg[0] == "-idl")
 					{
-						EmitInterface(rootNode, idl, stub);
+						if (idlpat != null)
+						{
+							Console.WriteLine("Can't specify IDL pattern twice");
+							usage();
+						}
+						idlpat = GetPat(arg, "%.idl.cs");
 					}
-					else if (rootNode.Name == "entity")
+					else if (arg[0] == "-stub")
 					{
-						EmitEntity(rootNode, idl, stub);
+						if (stubpat != null)
+						{
+							Console.WriteLine("Can't specify stub pattern twice");
+							usage();
+						}
+						stubpat = GetPat(arg, "%.stub.cs");
+					}
+					else if (arg[0] == "-entity")
+					{
+						if (entitypat != null)
+						{
+							Console.WriteLine("Can't specify entity pattern twice");
+							usage();
+						}
+						entitypat = GetPat(arg, "%.entity.cs");
 					}
 					else
 					{
-						Console.WriteLine("Unknown IDL root format: {0}", rootNode.Name);
-						throw new InvalidDataException("Bad XML input file");
+						Console.WriteLine("Unknown argument: {0}", s);
+						usage();
 					}
-					idl.Flush();
-					using (Stream swi = new FileStream(args[1], FileMode.Create))
-					{
-						int len = (int)idls.Length;
-						byte[] odata = idls.GetBuffer();
-						swi.Write(odata, 0, len);
-					}
-					if (args.Length == 3)
-					{
-						stub.Flush();
-						if (File.Exists(args[2]))
-						{
-							Console.WriteLine("Not overwriting existing stub: {0}", args[2]);
-						}
-						else
-						{
-							using (Stream sw = new FileStream(args[2], FileMode.CreateNew))
-							{
-								int len = (int)ms.Length;
-								byte[] odata = ms.GetBuffer();
-								sw.Write(odata, 0, len);
-							}
-						}
-					}
+				}
+			}
+			try
+			{
+				XmlDocument xd = new XmlDocument();
+				xd.Load(inputfilename);
+				if (idlpat != null)
+				{
+					EmitInterfaces(xd.SelectNodes("/idl/interface"), idlpat);
+				}
+				if (stubpat != null)
+				{
+					EmitStubs(xd.SelectNodes("/idl/interface"), stubpat);
+				}
+				if (entitypat != null)
+				{
+					EmitEntities(xd.SelectNodes("/idl/entity"), entitypat);
+				}
+			}
+			catch (System.Exception x)
+			{
+				Console.WriteLine("error: {0}", x.Message);
+				usage();
+			}
+		}
+		
+		static Regex idre = new Regex("^[_a-z][_a-z0-9]*$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+		
+		static void EmitInterfaces(XmlNodeList xnl, string pat)
+		{
+			foreach (XmlNode xn in xnl)
+			{
+				XmlAttribute xa = xn.Attributes["name"];
+				if (xa == null || xa.Value == "")
+				{
+					throw new InvalidDataException("interface elements must have a name attribute");
+				}
+				if (!idre.IsMatch(xa.Value))
+				{
+					throw new InvalidDataException("interface name " + xa.Value + " is not a proper identifier");
+				}
+				MemoryStream idls = new MemoryStream();
+				MemoryStream stubs = new MemoryStream();
+				EmitInterface(xn, new StreamWriter(idls), new StreamWriter(stubs));
+				string path = pat.Replace("%", xa.Value);
+				using (FileStream fs = new FileStream(path, FileMode.Create))
+				{
+					fs.Write(idls.GetBuffer(), 0, (int)idls.Length);
+				}
+			}
+		}
+		
+		static void EmitStubs(XmlNodeList xnl, string pat)
+		{
+			foreach (XmlNode xn in xnl)
+			{
+				XmlAttribute xa = xn.Attributes["name"];
+				if (xa == null || xa.Value == "")
+				{
+					throw new InvalidDataException("interface elements must have a name attribute");
+				}
+				if (!idre.IsMatch(xa.Value))
+				{
+					throw new InvalidDataException("interface name " + xa.Value + " is not a proper identifier");
+				}
+				MemoryStream idls = new MemoryStream();
+				MemoryStream stubs = new MemoryStream();
+				EmitInterface(xn, new StreamWriter(idls), new StreamWriter(stubs));
+				string path = pat.Replace("%", xa.Value);
+				using (FileStream fs = new FileStream(path, FileMode.Create))
+				{
+					fs.Write(stubs.GetBuffer(), 0, (int)stubs.Length);
+				}
+			}
+		}
+		
+		static void EmitEntities(XmlNodeList xnl, string pat)
+		{
+			foreach (XmlNode xn in xnl)
+			{
+				XmlAttribute xa = xn.Attributes["name"];
+				if (xa == null || xa.Value == "")
+				{
+					throw new InvalidDataException("entity elements must have a name attribute");
+				}
+				if (!idre.IsMatch(xa.Value))
+				{
+					throw new InvalidDataException("entity name " + xa.Value + " is not a proper identifier");
+				}
+				MemoryStream ents = new MemoryStream();
+				EmitEntity(xn, new StreamWriter(ents));
+				string path = pat.Replace("%", xa.Value);
+				using (FileStream fs = new FileStream(path, FileMode.Create))
+				{
+					fs.Write(ents.GetBuffer(), 0, (int)ents.Length);
 				}
 			}
 		}
@@ -74,6 +189,9 @@ namespace apimono
 			idl.WriteLine("using IMVU.IDL;");
 			idl.WriteLine("using ApiParameter = IMVU.IDL.ApiMethod.ApiParameter;");
 			idl.WriteLine("");
+			idl.WriteLine("namespace idl");
+			idl.WriteLine("{0}", "{");
+			idl.WriteLine("");
 			idl.WriteLine("public class {0} : WrapperBase {1}", iname, "{");
 			idl.WriteLine("    public {0}() : base(\"{1}\") {2}", iname, iname, "{}");
 			idl.WriteLine("    public override string Version() {0} return \"{1}\"; {2}",
@@ -87,13 +205,17 @@ namespace apimono
 			stub.WriteLine("using IMVU.IDL;");
 			stub.WriteLine("using System;");
 			stub.WriteLine("using System.Collections.Generic;");
+			stub.WriteLine("using entity;");
+			stub.WriteLine("");
+			stub.WriteLine("namespace api");
+			stub.WriteLine("{0}", "{");
 			stub.WriteLine("");
 			stub.WriteLine("public class {0} {1}", iname, "{");
 			
 			foreach (XmlNode xn in itf.SelectNodes("method"))
 			{
 				string mname = Helpers.AttributeStr(xn, "name");
-				idl.WriteLine("    new ApiMethod(\"{0}\", // name", mname);
+				idl.WriteLine("    new ApiMethod(\"{0}\", \"{1}\", // name", iname, mname);
 				bool mauth = Helpers.AttributeBool(xn, "session", true);
 				string mtype = Helpers.AttributeStr(xn, "type", "dict");
 				idl.WriteLine("        {0}, // session", mauth ? "true" : "false");
@@ -160,12 +282,21 @@ namespace apimono
 			idl.WriteLine("    {0}", "}");
 			idl.WriteLine("{0}", "}");
 			idl.WriteLine("");
+			idl.WriteLine("{0} // namespace", "}");
+			idl.WriteLine("");
 			idl.WriteLine("//  end of {0}", iname);
 
 			stub.WriteLine("{0}; // class", "}");
+			stub.WriteLine("");
+			stub.WriteLine("{0} // namespace", "}");
+			stub.WriteLine("");
+			stub.WriteLine("//  end of {0}", iname);
+			
+			idl.Flush();
+			stub.Flush();
 		}
 		
-		public static void EmitEntity(XmlNode itf, StreamWriter idl, StreamWriter stub)
+		public static void EmitEntity(XmlNode itf, StreamWriter ent)
 		{
 			throw new NotImplementedException("EmitEntity() not implemented");
 		}
